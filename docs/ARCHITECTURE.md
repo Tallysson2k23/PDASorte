@@ -1,32 +1,25 @@
 # Arquitetura
 
-## Decisão
+Monólito modular em Next.js App Router com Firebase Authentication e Firestore. A página pública é somente leitura; criação, edição e sorteio passam por endpoints protegidos, sessão administrativa HttpOnly, RBAC e Firebase Admin SDK no servidor.
 
-Monólito modular em Next.js App Router. O navegador acessa páginas públicas e APIs/Server Actions validadas; operações críticas passam por serviços de domínio no servidor e pelo Firebase Admin SDK. Firebase Authentication será usado somente para administradores e vendedores autorizados.
+## Módulos
 
-## Módulos planejados
+- `campaigns`: campanhas, publicação, encerramento e resultado.
+- `reservations`: escolha transacional de número e identificação privada do participante.
+- `draws`: registros imutáveis de cada sorteio concluído.
+- `media`: imagens recodificadas e sem metadados.
+- `audit`: histórico append-only das ações administrativas.
+- `auth` e `security`: sessão, permissões, origem e limitação de tentativas.
 
-`campaigns`, `orders`, `payments`, `draws`, `sellers`, `commissions`, `media`, `audit` e `security`. Integrações usam interfaces: `PaymentProvider` e `ImageStorageProvider`.
+Não existem módulos de pedidos, pagamentos, vendas, vendedores ou comissões.
 
 ## Invariantes
 
-- Modo real permanece bloqueado por padrão.
-- Estados de pedido, pagamento e número são independentes.
-- Reserva é transacional; confirmação depende de evento de pagamento verificado.
-- Sorteio ocorre somente no servidor após congelamento da campanha.
-- Código público não contém ID interno; token de consulta é aleatório e persistido somente como hash.
-- Valores monetários são inteiros em centavos.
-
-## Operação
-
-Vercel poderá hospedar a aplicação, mas não haverá deploy nesta fase. Upload no filesystem da Vercel não é persistente; produção exigirá armazenamento externo escolhido pelo responsável.
-
-## Autenticação administrativa
-
-O navegador autentica com Firebase Auth e envia o ID token somente à API de sessão. O servidor verifica revogação e perfil ativo em `users`, emite cookie de sessão HttpOnly e revalida cookie, status e função em cada acesso administrativo. Custom claims não são a única fonte de autorização.
-
-## Marco 3 — campanhas e mídia
-
-Campanhas passam por uma DAL marcada como `server-only`. Cada criação/edição grava o documento corrente, uma versão imutável em `campaignVersions` e um evento em `auditLogs` na mesma transação. O modelo não contém estado comercial real: `demo_active` é explicitamente demonstrativo.
-
-Uploads usam `ImageStorageProvider`. O adaptador local identifica o conteúdo, limita 5 MB e 5000 × 5000 pixels, recodifica para WebP sem metadados, produz card/miniatura e usa nomes UUID. Nenhum caminho enviado pelo usuário é usado no filesystem.
+- A participação é gratuita e restrita ao grupo.
+- O sorteio é executado somente no servidor.
+- Cada campanha aceita no máximo um resultado.
+- Cada número aceita no máximo uma reserva por campanha.
+- O sorteio seleciona somente entre reservas confirmadas.
+- Campanhas sorteadas não podem ser editadas.
+- Toda criação, edição e conclusão gera auditoria.
+- Datas são persistidas em UTC e exibidas em `America/Recife`.

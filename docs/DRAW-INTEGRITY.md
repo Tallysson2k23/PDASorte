@@ -1,7 +1,7 @@
 # Integridade do sorteio
 
-Agenda padrão desejada: fechamento 16:30 e sorteio 17:00 em `America/Recife`, configurável por campanha.
+O resultado é produzido no servidor com `node:crypto.randomInt`, selecionando uma posição dentro da lista de reservas confirmadas. Números sem participante não entram no sorteio. A atualização da campanha, o documento em `draws` e o evento de auditoria são gravados na mesma transação Firestore.
 
-O servidor congelará a campanha, adquirirá trava idempotente e sorteará no intervalo versionado com aleatoriedade criptograficamente segura. Serão registrados instante, regras, intervalo, entrada de transparência aplicável, resultado e falhas. Falha não autoriza escolher silenciosamente outro número.
+A transação impede resultados concorrentes: depois do primeiro commit, novas tentativas encontram a campanha como `drawn` e são recusadas. O resultado concluído não pode ser alterado pela edição administrativa.
 
-Resultado concluído não é editável. Correção cria evento novo com justificativa e dupla aprovação. Número não vendido gera “sem ganhador” e só acumula quando o regulamento versionado permitir. O simulador usa dados isolados e nunca altera campanha.
+O sistema registra o algoritmo, a versão das regras, o intervalo, o número, o instante e o administrador executor. O nome e o contato do ganhador ficam restritos ao painel.

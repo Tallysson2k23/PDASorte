@@ -2,7 +2,7 @@ import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
 
-if (process.env.DEMO_MODE !== "true") throw new Error("Bootstrap permitido somente com DEMO_MODE=true nesta etapa.");
+if (process.env.INTERNAL_USE_ONLY !== "true") throw new Error("Bootstrap permitido somente com INTERNAL_USE_ONLY=true.");
 
 const email = process.env.SUPERADMIN_EMAIL;
 const password = process.env.SUPERADMIN_INITIAL_PASSWORD;

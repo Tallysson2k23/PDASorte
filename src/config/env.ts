@@ -1,13 +1,14 @@
 import { z } from "zod";
 
-const schema = z.object({ DEMO_MODE: z.enum(["true", "false"]).default("true") });
+const schema = z.object({
+  INTERNAL_USE_ONLY: z.literal("true").default("true"),
+  APP_TIME_ZONE: z.literal("America/Recife").default("America/Recife"),
+});
 
 export function getServerEnvironment() {
-  return schema.parse({ DEMO_MODE: process.env.DEMO_MODE });
+  return schema.parse({ INTERNAL_USE_ONLY: process.env.INTERNAL_USE_ONLY, APP_TIME_ZONE: process.env.APP_TIME_ZONE });
 }
 
-export function assertDemoMode(): void {
-  if (getServerEnvironment().DEMO_MODE !== "true") {
-    throw new Error("Operação real bloqueada: mantenha DEMO_MODE=true até a aprovação jurídica e regulatória.");
-  }
+export function assertInternalUseOnly(): void {
+  getServerEnvironment();
 }

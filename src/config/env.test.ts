@@ -1,17 +1,17 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { assertDemoMode, getServerEnvironment } from "./env";
+import { assertInternalUseOnly, getServerEnvironment } from "./env";
 
-const original = process.env.DEMO_MODE;
-afterEach(() => { process.env.DEMO_MODE = original; });
+const original = process.env.INTERNAL_USE_ONLY;
+afterEach(() => { process.env.INTERNAL_USE_ONLY = original; });
 
-describe("modo de demonstração", () => {
+describe("uso interno", () => {
   it("é ativado por padrão", () => {
-    delete process.env.DEMO_MODE;
-    expect(getServerEnvironment().DEMO_MODE).toBe("true");
+    delete process.env.INTERNAL_USE_ONLY;
+    expect(getServerEnvironment().INTERNAL_USE_ONLY).toBe("true");
   });
 
-  it("bloqueia a desativação", () => {
-    process.env.DEMO_MODE = "false";
-    expect(() => assertDemoMode()).toThrow(/Operação real bloqueada/);
+  it("recusa configuração incompatível", () => {
+    process.env.INTERNAL_USE_ONLY = "false";
+    expect(() => assertInternalUseOnly()).toThrow();
   });
 });

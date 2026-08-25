@@ -1,32 +1,33 @@
-# PDA DA SORTE
+# Sorteios da Turma
 
-Protótipo web auditável para estudo de campanhas com seleção de números. **Não realiza vendas, cobranças ou premiações reais.** O projeto deve permanecer com `DEMO_MODE=true` até existir enquadramento jurídico documentado, autorização aplicável e aprovação explícita do responsável.
+Sistema gratuito para sorteios recreativos e internos de um grupo da faculdade. A aplicação publica campanhas, permite que cada integrante reserve um número com nome e telefone e seleciona uma das reservas no servidor. Não possui apostas, venda de números, pagamentos, comissões nem prêmios em dinheiro.
 
-## Requisitos
+## Desenvolvimento local
 
-- Node.js 20.9 ou superior (Node 24 LTS recomendado)
-- npm 11
+Requisitos: Node.js 20.9 ou superior, npm 11 e Java 21 para os emuladores Firebase.
 
-## Desenvolvimento
-
-```bash
+```powershell
 npm install
 Copy-Item .env.example .env.local
-npm run dev
+npm.cmd run emulators
 ```
 
-Verificações: `npm run lint`, `npm run typecheck`, `npm test` e `npm run build`.
+Em outro terminal, configure a conta administrativa e inicie a aplicação:
 
-Se o PowerShell bloquear `npm.ps1`, use `npm.cmd` nos mesmos comandos, por exemplo `npm.cmd run dev`.
+```powershell
+npm.cmd run bootstrap:superadmin
+npm.cmd run dev
+```
 
-## Estado do projeto
+A página pública fica em `http://localhost:3000`, o painel em `http://localhost:3000/admin` e a interface dos emuladores em `http://localhost:4000`.
 
-Marco 3: fundação Firebase, autenticação/RBAC, dashboard, campanhas versionadas e upload local seguro implementados. Reservas, pagamentos e sorteios ainda não estão implementados.
+## Fluxo
 
-## Painel administrativo local
+1. O administrador cria uma campanha em rascunho.
+2. Define prêmio, intervalo de números, data e regras.
+3. Publica a campanha para o grupo.
+4. Os integrantes escolhem números disponíveis e informam nome e contato.
+5. O organizador encerra as reservas e realiza o sorteio no painel.
+6. O número definitivo aparece publicamente; nome e contato do ganhador ficam restritos ao painel.
 
-O Marco 2 adiciona `/admin`. Para testar com emuladores, instale Java 21, adicione ao `.env.local` os novos campos de `.env.example`, defina `SUPERADMIN_EMAIL` e `SUPERADMIN_INITIAL_PASSWORD`, execute `npm.cmd run emulators` e, em outro terminal, `npm.cmd run bootstrap:superadmin` seguido de `npm.cmd run dev`. A interface dos emuladores fica em `http://localhost:4000`.
-
-Não existe cadastro administrativo público. Após o primeiro bootstrap, remova a senha inicial do `.env.local`.
-
-Consulte `docs/LEGAL-CHECKLIST.md`, `docs/ARCHITECTURE.md` e `docs/SECURITY.md` antes de contribuir.
+Verificações: `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:rules` e `npm run build`.

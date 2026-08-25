@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "PDA DA SORTE — Demonstração",
-  description: "Protótipo sem compras ou premiações reais.",
+  title: "Sorteios da Turma",
+  description: "Sorteios gratuitos e internos do grupo da faculdade.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

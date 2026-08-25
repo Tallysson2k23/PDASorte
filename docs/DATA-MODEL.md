@@ -1,21 +1,23 @@
 # Modelo de dados
 
-## Coleções planejadas
+## `campaigns`
 
-`users`, `roles`, `campaigns`, `campaignVersions`, `numbers`, `orders`, `payments`, `paymentEvents`, `draws`, `prizeLedger`, `sellers`, `commissions`, `commissionPayments`, `media`, `settings`, `auditLogs`, `securityEvents`, `scheduledJobs` e `legalDocuments`.
+Documento corrente com título, descrição, imagem, descrição do prêmio simples, intervalo numérico, data do sorteio em UTC, fuso, regras, status, versão e resultado opcional.
 
-Números serão documentos pagináveis em `campaigns/{campaignId}/numbers`; nunca um array gigante. Valores monetários usam centavos inteiros. Datas são UTC com agenda calculada em `America/Recife`.
+Estados: `draft`, `published`, `closed`, `drawn` e `archived`. O estado `drawn` só é produzido pelo serviço de sorteio.
 
-## Estados
+## `campaignVersions`
 
-Pedido: `created`, `awaiting_payment`, `paid`, `expired`, `cancelled`, `refunded`, `under_review`. Número: `available`, `reserved`, `sold`, `blocked`. Pagamento mantém máquina de estados própria.
+Snapshots append-only das regras e configurações de cada versão, vinculados à campanha e ao administrador responsável.
 
-## Proteção
+## `draws`
 
-Dados pessoais ficam fora de projeções públicas. Tokens de acompanhamento são armazenados como hash. Eventos de pagamento, prêmio e auditoria são append-only. Índices, paginação, retenção e custos serão definidos antes da criação das coleções.
+Registro imutável com campanha, versão, intervalo, número selecionado, algoritmo, autor e instante. O resultado também é projetado na campanha para leitura pública.
 
-## Campanhas implementadas
+## `campaigns/{campaignId}/reservations`
 
-`campaigns` guarda a versão corrente, contadores resumidos e `demoOnly=true`. `campaignVersions` guarda snapshots completos numerados e append-only. Alterações críticas são recusadas quando `soldCount > 0`. Estados disponíveis: `draft`, `demo_active`, `paused`, `blocked` e `archived`; não existe `active` comercial.
+Uma reserva por número, identificada pelo número normalizado. Guarda número, nome, telefone e instante. A criação é transacional para impedir duplicidade. Nome e telefone não fazem parte da disponibilidade pública e só são exibidos ao administrador quando a reserva é vencedora.
 
-`media` registra tipo original detectado, dimensões, tamanho, URLs derivadas, provedor, autor e instante do upload. O arquivo original não é preservado no adaptador local.
+## `users`, `media`, `auditLogs` e `securityEvents`
+
+Perfis administrativos, metadados de imagens, trilha de auditoria e eventos de segurança. O navegador não acessa o Firestore diretamente; as regras negam por padrão.

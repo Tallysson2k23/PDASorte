@@ -7,8 +7,8 @@ describe("RBAC", () => {
     expect(isRole("cliente")).toBe(false);
   });
 
-  it("não concede gestão de usuários ao vendedor", () => {
-    expect(can("vendedor", "users:manage")).toBe(false);
+  it("não concede gestão de usuários ao organizador", () => {
+    expect(can("organizador", "users:manage")).toBe(false);
     expect(can("superadmin", "users:manage")).toBe(true);
   });
 });
