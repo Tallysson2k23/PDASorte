@@ -58,7 +58,7 @@ export function NumberPicker({ campaignId, numberStart, numberEnd }: { campaignI
         {numbers.map((number) => {
           const unavailable = reservedSet.has(number);
           const active = selected.includes(number);
-          return <button key={number} type="button" disabled={unavailable} onClick={() => setSelected((current) => current.includes(number) ? current.filter((item) => item !== number) : [...current, number].sort((a, b) => a - b))} aria-pressed={active} aria-label={unavailable ? `Número ${number} reservado` : `${active ? "Remover" : "Escolher"} número ${number}`} className={`aspect-square rounded-full text-sm font-black shadow-lg transition ${unavailable ? "cursor-not-allowed border border-white/5 bg-white/[0.03] text-slate-700" : active ? "scale-110 bg-emerald-300 text-slate-950 ring-4 ring-emerald-300/20" : "border border-white/15 bg-slate-800 text-white hover:-translate-y-1 hover:border-emerald-300/50 hover:bg-slate-700"}`}>{number}</button>;
+          return <button key={number} type="button" disabled={unavailable} onClick={() => setSelected((current) => current.includes(number) ? current.filter((item) => item !== number) : [...current, number].sort((a, b) => a - b))} aria-pressed={active} aria-label={unavailable ? `Número ${number} reservado` : `${active ? "Remover" : "Escolher"} número ${number}`} className={`aspect-square rounded-full text-sm font-black shadow-lg transition ${unavailable ? "cursor-not-allowed border border-red-300/20 bg-red-500/25 text-red-200" : active ? "scale-110 bg-emerald-300 text-slate-950 ring-4 ring-emerald-300/20" : "border border-white/15 bg-slate-800 text-white hover:-translate-y-1 hover:border-emerald-300/50 hover:bg-slate-700"}`}>{number}</button>;
         })}
       </div>
 

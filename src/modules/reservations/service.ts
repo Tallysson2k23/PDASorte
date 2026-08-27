@@ -76,3 +76,35 @@ export async function reserveNumbers(campaignId: string, rawInput: unknown): Pro
 
   return numbers.map((number) => ({ number, participantName: input.participantName, contact: input.contact, createdAt: null }));
 }
+
+export type AdminReservationDTO = {
+  campaignId: string;
+  campaignTitle: string;
+  participantName: string;
+  contact: string;
+  numbers: number[];
+  createdAt: string | null;
+};
+
+export async function listRecentReservations(campaigns: Array<{ id: string; title: string }>): Promise<AdminReservationDTO[]> {
+  const snapshots = await Promise.all(campaigns.map(async (campaign) => ({
+    campaign,
+    snapshot: await adminDb().collection("campaigns").doc(campaign.id).collection("reservations").orderBy("createdAt", "desc").limit(200).get(),
+  })));
+  const grouped = new Map<string, AdminReservationDTO>();
+  for (const { campaign, snapshot } of snapshots) {
+    for (const document of snapshot.docs) {
+      const data = document.data();
+      if (typeof data.number !== "number" || typeof data.participantName !== "string" || typeof data.contact !== "string") continue;
+      const createdAt = iso(data.createdAt);
+      const key = `${campaign.id}|${data.participantName}|${data.contact}|${createdAt ?? document.id}`;
+      const existing = grouped.get(key);
+      if (existing) existing.numbers.push(data.number);
+      else grouped.set(key, { campaignId: campaign.id, campaignTitle: campaign.title, participantName: data.participantName, contact: data.contact, numbers: [data.number], createdAt });
+    }
+  }
+  return [...grouped.values()]
+    .map((reservation) => ({ ...reservation, numbers: reservation.numbers.sort((a, b) => a - b) }))
+    .sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""))
+    .slice(0, 200);
+}
