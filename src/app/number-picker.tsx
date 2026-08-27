@@ -52,13 +52,13 @@ export function NumberPicker({ campaignId, numberStart, numberEnd }: { campaignI
   if (loading) return <p className="mt-5 text-sm text-slate-400">Carregando números disponíveis…</p>;
 
   return (
-    <div className="mt-6 border-t border-white/10 pt-5">
-      <div className="flex items-center justify-between gap-4"><p className="text-sm font-black">Escolha seu número</p><p className="text-xs text-slate-500">{numbers.length - reserved.length} disponíveis</p></div>
-      <div className="mt-4 grid max-h-56 grid-cols-5 gap-2 overflow-y-auto pr-1 sm:grid-cols-8">
+    <div>
+      <div className="flex items-center justify-between gap-4"><p className="text-sm font-black">Números disponíveis</p><p className="rounded-full bg-emerald-300/10 px-3 py-1 text-xs font-bold text-emerald-200">{numbers.length - reserved.length} livres</p></div>
+      <div className="mt-5 grid max-h-[32rem] grid-cols-5 gap-3 overflow-y-auto pr-2 sm:grid-cols-8 md:grid-cols-10">
         {numbers.map((number) => {
           const unavailable = reservedSet.has(number);
           const active = selected === number;
-          return <button key={number} type="button" disabled={unavailable} onClick={() => setSelected(number)} aria-label={unavailable ? `Número ${number} reservado` : `Escolher número ${number}`} className={`rounded-lg px-2 py-2 text-xs font-bold transition ${unavailable ? "cursor-not-allowed bg-white/5 text-slate-700 line-through" : active ? "bg-emerald-300 text-slate-950 ring-2 ring-emerald-100" : "bg-white/10 text-slate-200 hover:bg-white/20"}`}>{number}</button>;
+          return <button key={number} type="button" disabled={unavailable} onClick={() => setSelected(number)} aria-label={unavailable ? `Número ${number} reservado` : `Escolher número ${number}`} className={`aspect-square rounded-full text-sm font-black shadow-lg transition ${unavailable ? "cursor-not-allowed border border-white/5 bg-white/[0.03] text-slate-700" : active ? "scale-110 bg-emerald-300 text-slate-950 ring-4 ring-emerald-300/20" : "border border-white/15 bg-slate-800 text-white hover:-translate-y-1 hover:border-emerald-300/50 hover:bg-slate-700"}`}>{number}</button>;
         })}
       </div>
 

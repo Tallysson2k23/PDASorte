@@ -5,7 +5,7 @@ export const campaignStatusSchema = z.enum(["draft", "published", "closed", "dra
 export const campaignInputSchema = z.object({
   title: z.string().trim().min(5).max(120),
   description: z.string().trim().min(20).max(2_000),
-  imageUrl: z.string().trim().regex(/^\/uploads\/[a-f0-9-]+-(card|thumb)\.webp$/).or(z.literal("")),
+  imageUrl: z.string().trim().regex(/^\/(?:uploads\/[a-f0-9-]+-(?:card|thumb)\.webp|api\/media\/[a-f0-9-]{36}\/(?:card|thumb))$/).or(z.literal("")),
   prizeDescription: z.string().trim().min(3).max(300),
   numberStart: z.number().int().min(0).max(999_999),
   numberEnd: z.number().int().min(0).max(999_999),

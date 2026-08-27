@@ -64,6 +64,14 @@ export async function listPublicCampaigns(): Promise<CampaignDTO[]> {
   return campaigns.filter((campaign) => campaign.status === "published" || campaign.status === "closed" || campaign.status === "drawn");
 }
 
+export async function getPublicCampaign(id: string): Promise<CampaignDTO | null> {
+  if (!/^[A-Za-z0-9_-]{1,128}$/.test(id)) return null;
+  const snapshot = await adminDb().collection("campaigns").doc(id).get();
+  if (!snapshot.exists) return null;
+  const campaign = toDTO(snapshot.id, snapshot.data()!);
+  return campaign.status === "published" || campaign.status === "closed" || campaign.status === "drawn" ? campaign : null;
+}
+
 export async function createCampaign(rawInput: unknown, actor: AdminActor): Promise<CampaignDTO> {
   const input = campaignInputSchema.parse(rawInput);
   const db = adminDb();
