@@ -16,6 +16,7 @@ const csp = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  transpilePackages: ["firebase-admin", "jwks-rsa", "jose"],
   async headers() {
     return [{ source: "/:path*", headers: [
       { key: "Content-Security-Policy", value: csp },
