@@ -31,3 +31,5 @@ A página pública fica em `http://localhost:3000`, o painel em `http://localhos
 6. O número definitivo aparece publicamente; nome e contato do ganhador ficam restritos ao painel.
 
 Verificações: `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:rules` e `npm run build`.
+
+Para publicação na Vercel, não copie as configurações dos emuladores locais. Consulte `docs/DEPLOYMENT.md` para a lista de variáveis de produção.

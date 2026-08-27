@@ -2,6 +2,7 @@ import Image from "next/image";
 import { assertInternalUseOnly } from "@/config/env";
 import { listPublicCampaigns } from "@/modules/campaigns/service";
 import { NumberPicker } from "./number-picker";
+import { loadPublicCampaigns } from "./load-public-campaigns";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +10,7 @@ const dateTime = new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeStyle
 
 export default async function Home() {
   assertInternalUseOnly();
-  const campaigns = await listPublicCampaigns();
+  const { campaigns, dataUnavailable } = await loadPublicCampaigns(listPublicCampaigns);
   const openCampaigns = campaigns.filter((campaign) => campaign.status === "published" || campaign.status === "closed");
   const results = campaigns.filter((campaign) => campaign.status === "drawn");
 
@@ -23,6 +24,7 @@ export default async function Home() {
       </header>
 
       <section className="mx-auto max-w-6xl px-6 py-20">
+        {dataUnavailable && <p role="alert" className="mb-8 rounded-2xl border border-amber-300/30 bg-amber-300/10 p-4 text-sm text-amber-100">Os sorteios estão temporariamente indisponíveis. A página continua acessível enquanto a organização restabelece a conexão.</p>}
         <span className="inline-flex rounded-full border border-emerald-300/30 bg-emerald-300/10 px-4 py-2 text-sm font-semibold text-emerald-200">Gratuito · recreativo · entre colegas</span>
         <h1 className="mt-6 max-w-4xl text-5xl font-black tracking-tight sm:text-7xl">Um jeito simples e transparente de <span className="text-emerald-300">sortear juntos.</span></h1>
         <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">Campanhas internas para confraternizações e atividades do grupo. Não há apostas, venda de números, pagamentos ou prêmio em dinheiro.</p>
