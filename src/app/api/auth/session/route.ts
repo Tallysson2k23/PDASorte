@@ -40,7 +40,9 @@ export async function POST(request: NextRequest) {
       code: typeof safeError.code === "string" ? safeError.code : "unknown",
       message: typeof safeError.message === "string" ? safeError.message : "unknown",
     };
-    console.error("Falha ao criar sessão administrativa", diagnostic.code, diagnostic.message);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Falha ao criar sessão administrativa", diagnostic.code, diagnostic.message);
+    }
     return NextResponse.json({ error: "Credenciais inválidas." }, { status: 401 });
   }
 }
