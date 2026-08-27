@@ -2,7 +2,7 @@ import "server-only";
 
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { adminDb } from "@/lib/firebase/admin";
-import { reservationInputSchema, type ReservationDTO } from "./schema";
+import { reservationBatchInputSchema, reservationInputSchema, type ReservationDTO } from "./schema";
 
 function validCampaignId(id: string): boolean {
   return /^[A-Za-z0-9_-]{1,128}$/.test(id);
@@ -51,4 +51,28 @@ export async function reserveNumber(campaignId: string, rawInput: unknown): Prom
   const created = await reservationRef.get();
   const data = created.data()!;
   return { number: data.number, participantName: data.participantName, contact: data.contact, createdAt: iso(data.createdAt) };
+}
+
+export async function reserveNumbers(campaignId: string, rawInput: unknown): Promise<ReservationDTO[]> {
+  if (!validCampaignId(campaignId)) throw new Error("INVALID_ID");
+  const input = reservationBatchInputSchema.parse(rawInput);
+  const numbers = [...input.numbers].sort((a, b) => a - b);
+  const db = adminDb();
+  const campaignRef = db.collection("campaigns").doc(campaignId);
+  const reservationRefs = numbers.map((number) => campaignRef.collection("reservations").doc(numberDocumentId(number)));
+
+  await db.runTransaction(async (transaction) => {
+    const [campaign, ...existingReservations] = await Promise.all([transaction.get(campaignRef), ...reservationRefs.map((ref) => transaction.get(ref))]);
+    if (!campaign.exists) throw new Error("NOT_FOUND");
+    const data = campaign.data()!;
+    if (data.status !== "published" || typeof data.winningNumber === "number") throw new Error("CAMPAIGN_NOT_OPEN");
+    if (numbers.some((number) => number < data.numberStart || number > data.numberEnd)) throw new Error("NUMBER_OUT_OF_RANGE");
+    if (existingReservations.some((reservation) => reservation.exists)) throw new Error("NUMBER_UNAVAILABLE");
+    const now = FieldValue.serverTimestamp();
+    numbers.forEach((number, index) => transaction.create(reservationRefs[index]!, { number, participantName: input.participantName, contact: input.contact, createdAt: now }));
+    transaction.update(campaignRef, { reservedCount: FieldValue.increment(numbers.length), updatedAt: now });
+    transaction.create(db.collection("auditLogs").doc(), { actorId: "public-participant", action: "numbers.reserved", entity: `campaigns/${campaignId}/reservations`, after: { numbers }, createdAt: now });
+  });
+
+  return numbers.map((number) => ({ number, participantName: input.participantName, contact: input.contact, createdAt: null }));
 }
