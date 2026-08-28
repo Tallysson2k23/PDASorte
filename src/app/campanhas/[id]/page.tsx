@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { assertInternalUseOnly } from "@/config/env";
 import { getPublicCampaign } from "@/modules/campaigns/service";
 import { NumberPicker } from "../../number-picker";
+import { CampaignLiveStatus } from "../../campaign-live-status";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +20,7 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
     <main className="min-h-screen bg-slate-950 text-white">
       <header className="border-b border-white/10"><div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5"><Link href="/" className="font-black text-emerald-300">← SORTEIOS DA TURMA</Link><span className="text-xs text-slate-500">Uso interno</span></div></header>
       <article className="mx-auto max-w-5xl px-6 py-10 sm:py-16">
+        {campaign.status === "published" && <div className="mb-6"><CampaignLiveStatus campaignId={campaign.id} drawAt={campaign.drawAt} totalNumbers={campaign.numberEnd - campaign.numberStart + 1} initialReservedCount={campaign.reservedCount} /></div>}
         <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5">
           {campaign.imageUrl && <div className="relative aspect-[16/8] bg-slate-900"><Image src={campaign.imageUrl} alt="" fill priority sizes="(min-width: 1024px) 960px, 100vw" className="object-cover" /></div>}
           <div className="grid gap-10 p-6 sm:p-10 lg:grid-cols-[1fr_320px]">
