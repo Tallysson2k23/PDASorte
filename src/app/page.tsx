@@ -18,16 +18,16 @@ export default async function Home() {
     <main className="min-h-screen bg-slate-950 text-white">
       <header className="border-b border-white/10">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <div><p className="font-black text-emerald-300">SORTEIOS DA TURMA</p><p className="text-xs text-slate-400">Uso interno do grupo da faculdade</p></div>
+          <div><p className="font-black text-emerald-300">PDA DA SORTE</p><p className="text-xs text-slate-400">...</p></div>
           <a href="/admin" className="rounded-full border border-white/15 px-4 py-2 text-sm font-bold text-slate-300">Organização</a>
         </div>
       </header>
 
       <section className="mx-auto max-w-6xl px-6 py-20">
         {dataUnavailable && <p role="alert" className="mb-8 rounded-2xl border border-amber-300/30 bg-amber-300/10 p-4 text-sm text-amber-100">Os sorteios estão temporariamente indisponíveis. A página continua acessível enquanto a organização restabelece a conexão.</p>}
-        <span className="inline-flex rounded-full border border-emerald-300/30 bg-emerald-300/10 px-4 py-2 text-sm font-semibold text-emerald-200">Gratuito · recreativo · entre colegas</span>
-        <h1 className="mt-6 max-w-4xl text-5xl font-black tracking-tight sm:text-7xl">Um jeito simples e transparente de <span className="text-emerald-300">sortear juntos.</span></h1>
-        <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">Campanhas internas para confraternizações e atividades do grupo. Não há apostas, venda de números, pagamentos ou prêmio em dinheiro.</p>
+        <span className="inline-flex rounded-full border border-emerald-300/30 bg-emerald-300/10 px-4 py-2 text-sm font-semibold text-emerald-200">. . . <div className=""></div></span>
+        <h1 className="mt-6 max-w-4xl text-5xl font-black tracking-tight sm:text-7xl">Escolha seu numero da sorte<span className="text-emerald-300">!</span></h1>
+        <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">Pagamentos ou prêmio em dinheiro.</p>
 
         <div className="mt-16">
           <div><p className="text-sm font-bold uppercase tracking-widest text-emerald-300">Próximos</p><h2 className="mt-2 text-3xl font-black">Sorteios publicados</h2></div>
@@ -40,7 +40,7 @@ export default async function Home() {
         </div>
 
         <section className="mt-20 grid gap-4 border-t border-white/10 pt-12 sm:grid-cols-3">
-          {[["Sem custo", "Ninguém paga para participar."], ["Resultado definitivo", "Cada campanha recebe um único número sorteado."], ["Registro auditável", "O resultado e a versão das regras ficam registrados no Firebase."]].map(([title, description]) => <article key={title} className="rounded-2xl bg-white/5 p-6"><h2 className="font-bold text-emerald-200">{title}</h2><p className="mt-2 text-sm leading-6 text-slate-400">{description}</p></article>)}
+          {[["...", "..."], ["...", "..."], ["...", "..."]].map(([title, description]) => <article key={title} className="rounded-2xl bg-white/5 p-6"><h2 className="font-bold text-emerald-200">{title}</h2><p className="mt-2 text-sm leading-6 text-slate-400">{description}</p></article>)}
         </section>
       </section>
     </main>
